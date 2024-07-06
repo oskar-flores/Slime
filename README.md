@@ -1,11 +1,11 @@
 # SLIME: Simple Lambda Injector for Managed Environments
 
 <p align="center">
-    [<img src="logo.jpg" width="250"/>](logo.jpg)
+    <img src="logo.jpg" width="250"/>
 </p>
 
 SLIME is a lightweight, zero-dependency dependency injection container for TypeScript 5+. It's optimized for esbuild and
-uses JavaScript decorators to simplify dependency management in your projects.
+uses JavaScript decorators to simplify dependency management in aws lambda functions.
 
 ## Features
 
