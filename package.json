@@ -1,0 +1,29 @@
+{
+  "name": "simplyfire",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc --build",
+    "start": "npm run build && node dist/out.js",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "jest": "^29.7.0",
+    "@types/jest": "^29.5.12",
+    "@typescript-eslint/eslint-plugin": "^7.12.0",
+    "@typescript-eslint/parser": "^7.12.0",
+    "esbuild": "0.21.4",
+    "eslint": "^8.57.0",
+    "prettier": "^3.3.1",
+    "ts-jest": "^29.1.4",
+    "typescript": "5.4.5"
+  },
+  "peerDependencies": {
+    "typescript": "5.4.5"
+  }
+}
