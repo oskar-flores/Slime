@@ -1,13 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es2022",
-    "module": "esnext",
-    "strict": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "outDir": "dist",
     "esModuleInterop": true,
-    "incremental": true,
-    "moduleResolution": "Bundler",
-    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
+    /* Disallow inconsistently-cased references to the same file. */,
+    "strict": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
   },
   "include": [
     "src/**/*",

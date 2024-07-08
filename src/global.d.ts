@@ -5,7 +5,7 @@ declare global {
         dependencies: string[]
     }
 
-    const injectableDecoratorMetadata = new WeakMap<object, InjectableContext>();
+    var injectableDecoratorMetadata: WeakMap<object, InjectableContext>;
 }
 
 // Export an empty object to make this a module

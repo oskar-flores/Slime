@@ -1,3 +1,4 @@
+
 type Class = { new(...args: any[]): any };
 type ClassWithDependencies = { cls: Class; id: string; dependencies: string[] };
 
@@ -7,14 +8,14 @@ export class Container {
     public init(...classes: Class[]): void {
 
         // ensure all classes have been decorated with @Injectable
-        const undecorated = classes.filter((aClass) => !injectableDecoratorMetadata.has(aClass)).map((c) => c.name);
+        const undecorated = classes.filter((aClass) => !globalThis.injectableDecoratorMetadata.has(aClass)).map((c) => c.name);
         if (undecorated.length) {
             throw new Error(`Classes [${undecorated}] are not decorated with @Injectable.`);
         }
 
         //Validate classes
         const classWithDeps = classes.map(cls => {
-            const metadata = injectableDecoratorMetadata.get(cls);
+            const metadata = globalThis.injectableDecoratorMetadata.get(cls);
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             return {
                 cls,

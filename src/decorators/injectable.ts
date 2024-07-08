@@ -14,7 +14,10 @@ export function Injectable<I, TDependencies extends InterfaceId<unknown>[]>(
         new(...args: InterfaceOfIds<TDependencies>): I
     }>(constructor: T, {kind}: ClassDecoratorContext) {
         if (kind === "class") {
-            injectableDecoratorMetadata.set(constructor, {id, dependencies: dependencies ?? []});
+            if (!globalThis.injectableDecoratorMetadata) {
+                globalThis.injectableDecoratorMetadata = new WeakMap<object, InjectableContext>();
+            }
+            globalThis.injectableDecoratorMetadata.set(constructor, {id, dependencies: dependencies ?? []})
             return constructor;
         }
         throw new Error("Injectable decorator can only be applied to classes");

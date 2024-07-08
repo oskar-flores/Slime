@@ -1,6 +1,7 @@
 import {Container} from "../../src/container/Container";
 import {id} from "../../src/decorators/interfaceId";
 import {Injectable} from "../../src/decorators/injectable";
+import {describe, it, expect} from "vitest";
 
 
 describe('Container', () => {
@@ -37,7 +38,8 @@ describe('Container', () => {
     });
 
     // Retrieve instance of a non-existent class
-    it('should throw error when retrieving instance of a non-existent class', () => {5
+    it('should throw error when retrieving instance of a non-existent class', () => {
+        5
 
         const container = new Container();
         expect(() => container.resolve('nonExistent')).toThrowError();
