@@ -1,3 +1,5 @@
+
+![ci workflow](https://github.com/oskar-flores/Slime/actions/workflows/ci.yml/badge.svg)
 # SLIME: Simple Lambda Injector for Managed Environments
 
 <p align="center">
