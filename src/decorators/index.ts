@@ -1,2 +1,2 @@
-export * from './injectable';
-export * from './interfaceId';
+export * from "./injectable";
+export * from "./interfaceId";

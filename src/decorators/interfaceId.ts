@@ -6,6 +6,6 @@ export type InterfaceId<T> = string & { __id__: T };
  */
 
 export type InterfaceOfIds<Type extends InterfaceId<unknown>[]> = {
-    [Index in keyof Type]: Type[Index] extends InterfaceId<infer U> ? U : never;
-}
+  [Index in keyof Type]: Type[Index] extends InterfaceId<infer U> ? U : never;
+};
 export const id = <T>(id: string): InterfaceId<T> => id as InterfaceId<T>;

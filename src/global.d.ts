@@ -1,11 +1,12 @@
 // Declare the global module
 declare global {
-    interface InjectableContext {
-        id: string,
-        dependencies: string[]
-    }
+  interface InjectableContext {
+    id: string;
+    dependencies: string[];
+  }
 
-    var injectableDecoratorMetadata: WeakMap<object, InjectableContext>;
+  //eslint-disable-next-line
+  var injectableDecoratorMetadata: WeakMap<object, InjectableContext>;
 }
 
 // Export an empty object to make this a module
