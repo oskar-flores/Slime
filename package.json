@@ -1,6 +1,12 @@
 {
-  "name": "slime",
+  "name": "@oskarflores/slime-di",
+  "version": "0.0.1",
+  "author": {
+    "email": "oskar.flores@gmail.com",
+    "name": "OsKar Flores"
+  },
   "type": "module",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc --build",
     "clean": "rimraf dist",
@@ -10,6 +16,14 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
     "test": "vitest run"
+  },
+  "prettier": {
+    "arrowParens": "always",
+    "bracketSpacing": true,
+    "endOfLine": "lf",
+    "printWidth": 200,
+    "parser": "typescript",
+    "trailingComma": "all"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.12.0",
