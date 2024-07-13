@@ -14,6 +14,7 @@ jobs:
       contents: write
       pull-requests: write
       repository-projects: write
+      packages: write # allow GITHUB_TOKEN to publish packages
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -35,8 +36,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ github.ref }}
+          tag_name: ${{ github.ref }}vgb
           release_name: Release ${{ github.ref }}
           body: ${{steps.build_changelog.outputs.changelog}}
           draft: false
           prerelease: false
+      - name: Publish
+        id: publish
+        uses: JS-DevTools/npm-publish@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          registry: "https://npm.pkg.github.com"
