@@ -1,8 +1,8 @@
 // Declare the global module
 declare global {
   interface InjectableContext {
-    id: symbol;
-    dependencies: symbol[];
+    id: string;
+    dependencies: string[];
   }
 
   //eslint-disable-next-line

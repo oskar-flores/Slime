@@ -1,8 +1,8 @@
-type Class = { new(...args: any[]): any };
-type ClassWithDependencies = { cls: Class; id: symbol; dependencies: symbol[] };
+type Class = { new (...args: any[]): any };
+type ClassWithDependencies = { cls: Class; id: string; dependencies: string[] };
 
 export class Container {
-  private instances = new Map<symbol, unknown>();
+  private instances: Map<string, unknown> = new Map<string, unknown>();
 
   public init(...classes: Class[]): void {
     // ensure all classes have been decorated with @Injectable
@@ -34,10 +34,9 @@ export class Container {
     }
   }
 
-  public resolve<T>(token: T): T {
-    const id = (token as any)["Symbol(id)"] as symbol;
+  public resolve<T>(id: string): T {
     if (!this.instances.has(id)) {
-      throw new Error(`No instance found for the given token`);
+      throw new Error();
     }
     return this.instances.get(id) as T;
   }
@@ -55,13 +54,13 @@ export class Container {
   }
 
   //BFS to transverse the graph
-  private transverse(classWithDeps: Map<symbol, ClassWithDependencies>, inDegree: Map<symbol, number>): ClassWithDependencies[] {
+  private transverse(classWithDeps: Map<string, ClassWithDependencies>, inDegree: Map<string, number>): ClassWithDependencies[] {
     const queue = this.initializeQueue(inDegree);
     const ordered: ClassWithDependencies[] = [];
     while (queue.length > 0) {
       const currentKey = queue.shift()!;
       const nodeDeps = classWithDeps.get(currentKey);
-      if (!nodeDeps) throw new Error(`Class ${String(currentKey)} not found`);
+      if (!nodeDeps) throw new Error(`Class ${currentKey} not found`);
 
       ordered.push(nodeDeps);
 
@@ -76,7 +75,7 @@ export class Container {
     return ordered;
   }
 
-  private initializeQueue(inDegree: Map<symbol, number>): symbol[] {
+  private initializeQueue(inDegree: Map<string, number>): string[] {
     const queue = [];
     for (const [id, degree] of inDegree) {
       if (degree === 0) {
@@ -86,8 +85,8 @@ export class Container {
     return queue;
   }
 
-  private calculateIndegreeVector(classWithDeps: ClassWithDependencies[]): Map<symbol, number> {
-    const inDegreeMap = new Map<symbol, number>();
+  private calculateIndegreeVector(classWithDeps: ClassWithDependencies[]): Map<string, number> {
+    const inDegreeMap = new Map<string, number>();
     for (const aClass of classWithDeps) {
       if (aClass.dependencies.length === 0) inDegreeMap.set(aClass.id, 0);
 
