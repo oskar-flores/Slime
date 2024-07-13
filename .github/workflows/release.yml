@@ -41,6 +41,9 @@ jobs:
           body: ${{steps.build_changelog.outputs.changelog}}
           draft: false
           prerelease: false
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
       - name: Publish
         id: publish
         uses: JS-DevTools/npm-publish@v3
