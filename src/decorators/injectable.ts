@@ -4,10 +4,10 @@ import { type InterfaceId, type InterfaceOfIds } from "./interfaceId";
  * Decorator function for marking a class as injectable with a specific interface ID.
  *
  * @param id The interface ID to associate with the injectable class.
- * @param dependencies
+ * @param dependencies An array of interface IDs that the class depends on. Defaults to an empty array.
  * @returns A class decorator function that logs 'hola' when the class is decorated.
  */
-export function Injectable<I, TDependencies extends InterfaceId<unknown>[]>(id: InterfaceId<I>, dependencies: [...TDependencies]) {
+export function Injectable<I, TDependencies extends InterfaceId<unknown>[]>(id: InterfaceId<I>, dependencies?: [...TDependencies]) {
   return function <
     T extends {
       new (...args: InterfaceOfIds<TDependencies>): I;

@@ -1,4 +1,4 @@
-export type InterfaceId<T> = string & { __id__: T };
+export type InterfaceId<T> = symbol & { __id__: T };
 /**
  * This type takes a generic parameter T, which is an array of InterfaceIds.
  * It iterates over all indices of the array, attempting to infer the inner type U for each.
@@ -8,4 +8,4 @@ export type InterfaceId<T> = string & { __id__: T };
 export type InterfaceOfIds<Type extends InterfaceId<unknown>[]> = {
   [Index in keyof Type]: Type[Index] extends InterfaceId<infer U> ? U : never;
 };
-export const id = <T>(id: string): InterfaceId<T> => id as InterfaceId<T>;
+export const id = <T>(id: string): InterfaceId<T> => Symbol.for(id) as InterfaceId<T>;
