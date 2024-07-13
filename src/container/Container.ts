@@ -1,50 +1,29 @@
 type Class = { new(...args: any[]): any };
-type ClassWithDependencies = { cls: Class; id: symbol; dependencies: symbol[] };
+type ClassAndDependencies = { aClass: Class; id: symbol; dependencies: symbol[] };
 
 export class Container {
   private instances = new Map<symbol, unknown>();
 
-  public init(...classes: Class[]): void {
-    // ensure all classes have been decorated with @Injectable
-    const undecorated = classes.filter(aClass => !globalThis.injectableDecoratorMetadata.has(aClass)).map(c => c.name);
-    if (undecorated.length) {
-      throw new Error(`Classes [${undecorated}] are not decorated with @Injectable.`);
-    }
-
-    //Validate classes
-    const classWithDeps = classes.map(cls => {
-      const metadata = globalThis.injectableDecoratorMetadata.get(cls);
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return {
-        cls,
-        id: metadata!.id,
-        dependencies: metadata!.dependencies,
-      };
-    });
-
-    //topological sort for the classes
+  public bootstrap(...classes: Class[]): void {
+    this.ensureAllClassesAreDecorated(classes);
+    const classWithDeps = this.getClassMetadata(classes);
     const ordered = this.order(classWithDeps);
-    for (const currentClass of ordered) {
-      //get arguments
-      const args = currentClass.dependencies?.map(depId => this.instances.get(depId));
-      //create instance
-      const instance = new currentClass.cls(...args);
-      //save instance
-      this.instances.set(currentClass.id, instance);
-    }
+    this.instantiateAndSaveInstances(ordered);
   }
 
-  public resolve<T>(token: T): T {
-    const id = (token as any)["Symbol(id)"] as symbol;
-    if (!this.instances.has(id)) {
+  public resolve<T>(token: string | symbol): T {
+    const key = typeof token === "string" ? Symbol.for(token) : token;
+
+    if (!this.instances.has(key)) {
       throw new Error(`No instance found for the given token`);
     }
-    return this.instances.get(id) as T;
+
+    return this.instances.get(key) as T;
   }
 
   //Topological order using BFS and Kahn's algorithm
   //If there is a cycle in the graph, the algorithm will throw an error
-  private order(classWithDeps: ClassWithDependencies[]): ClassWithDependencies[] {
+  private order(classWithDeps: ClassAndDependencies[]): ClassAndDependencies[] {
     const inDegree = this.calculateIndegreeVector(classWithDeps);
     const classMap = new Map(classWithDeps.map(item => [item.id, item]));
     const ordered = this.transverse(classMap, inDegree);
@@ -55,9 +34,9 @@ export class Container {
   }
 
   //BFS to transverse the graph
-  private transverse(classWithDeps: Map<symbol, ClassWithDependencies>, inDegree: Map<symbol, number>): ClassWithDependencies[] {
+  private transverse(classWithDeps: Map<symbol, ClassAndDependencies>, inDegree: Map<symbol, number>): ClassAndDependencies[] {
     const queue = this.initializeQueue(inDegree);
-    const ordered: ClassWithDependencies[] = [];
+    const ordered: ClassAndDependencies[] = [];
     while (queue.length > 0) {
       const currentKey = queue.shift()!;
       const nodeDeps = classWithDeps.get(currentKey);
@@ -86,7 +65,7 @@ export class Container {
     return queue;
   }
 
-  private calculateIndegreeVector(classWithDeps: ClassWithDependencies[]): Map<symbol, number> {
+  private calculateIndegreeVector(classWithDeps: ClassAndDependencies[]): Map<symbol, number> {
     const inDegreeMap = new Map<symbol, number>();
     for (const aClass of classWithDeps) {
       if (aClass.dependencies.length === 0) inDegreeMap.set(aClass.id, 0);
@@ -96,5 +75,30 @@ export class Container {
       }
     }
     return inDegreeMap;
+  }
+
+  private ensureAllClassesAreDecorated(classes: Class[]): void {
+    const undecorated = classes
+      .filter(aClass => !globalThis.injectableDecoratorMetadata.has(aClass))
+      .map(c => c.name);
+
+    if (undecorated.length) {
+      throw new Error(`Classes [${undecorated}] are not decorated with @Injectable.`);
+    }
+  }
+
+  private getClassMetadata(classes: Class[]): ClassAndDependencies[] {
+    return classes.map(aClass => {
+      const metadata = globalThis.injectableDecoratorMetadata.get(aClass);
+      return { aClass, id: metadata!.id, dependencies: metadata!.dependencies };
+    });
+  }
+
+  private instantiateAndSaveInstances(orderedClasses: ClassAndDependencies[]): void {
+    for (const currentClass of orderedClasses) {
+      const args = currentClass.dependencies?.map(depId => this.instances.get(depId));
+      const instance = new currentClass.aClass(...args);
+      this.instances.set(currentClass.id, instance);
+    }
   }
 }

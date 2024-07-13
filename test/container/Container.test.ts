@@ -1,7 +1,5 @@
-import { Container } from "../../src/container/Container";
-import { id } from "../../src/decorators/interfaceId";
-import { Injectable } from "../../src/decorators/injectable";
-import { describe, it, expect } from "vitest";
+import { Container, id, Injectable } from "../../src";
+import { describe, expect, it } from "vitest";
 
 describe("Container", () => {
   // Initialize container with classes decorated with @Injectable
@@ -10,25 +8,24 @@ describe("Container", () => {
       name: string;
     }
 
-    const Namable = id<Namable>("Namable");
-
-    @Injectable(Namable, [])
+    @Injectable(id("Namable"))
     class TestClass implements Namable {
       name = "TestClass";
     }
 
     const container = new Container();
-    container.init(TestClass);
+    container.bootstrap(TestClass);
 
-    const instance = container.resolve(Namable);
+    const instance = container.resolve("Namable");
     expect(instance).toBeInstanceOf(TestClass);
   });
 
   it("should throw error when initializing container with undecorated classes", () => {
-    class UndecoratedClass {}
+    class UndecoratedClass {
+    }
 
     const container = new Container();
-    expect(() => container.init(UndecoratedClass)).toThrowError("Classes [UndecoratedClass] are not decorated with @Injectable.");
+    expect(() => container.bootstrap(UndecoratedClass)).toThrowError("Classes [UndecoratedClass] are not decorated with @Injectable.");
   });
 
   // Retrieve instance of a non-existent class
@@ -36,7 +33,7 @@ describe("Container", () => {
     5;
 
     const container = new Container();
-    expect(() => container.resolve("nonExistent")).toThrowError();
+    expect(() => container.resolve(id('nonExistent'))).toThrowError();
   });
 
   // Handle circular dependencies during initialization
@@ -60,6 +57,6 @@ describe("Container", () => {
     }
 
     const container = new Container();
-    expect(() => container.init(ClassA, ClassB)).toThrowError("Circular dependencies");
+    expect(() => container.bootstrap(ClassA, ClassB)).toThrowError("Circular dependencies");
   });
 });
