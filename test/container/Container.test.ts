@@ -7,8 +7,9 @@ describe("Container", () => {
     interface Namable {
       name: string;
     }
+    const namable = id<Namable>("Namable");
 
-    @Injectable(id("Namable"))
+    @Injectable(namable)
     class TestClass implements Namable {
       name = "TestClass";
     }
@@ -16,7 +17,7 @@ describe("Container", () => {
     const container = new Container();
     container.bootstrap(TestClass);
 
-    const instance = container.resolve("Namable");
+    const instance = container.resolve(namable);
     expect(instance).toBeInstanceOf(TestClass);
   });
 
