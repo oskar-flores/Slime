@@ -1,4 +1,4 @@
-type Class = { new(...args: any[]): any };
+type Class = { new (...args: any[]): any };
 type ClassAndDependencies = { aClass: Class; id: symbol; dependencies: symbol[] };
 
 export class Container {
@@ -78,9 +78,7 @@ export class Container {
   }
 
   private ensureAllClassesAreDecorated(classes: Class[]): void {
-    const undecorated = classes
-      .filter(aClass => !globalThis.injectableDecoratorMetadata.has(aClass))
-      .map(c => c.name);
+    const undecorated = classes.filter(aClass => !globalThis.injectableDecoratorMetadata.has(aClass)).map(c => c.name);
 
     if (undecorated.length) {
       throw new Error(`Classes [${undecorated}] are not decorated with @Injectable.`);

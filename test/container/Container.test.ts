@@ -22,8 +22,7 @@ describe("Container", () => {
   });
 
   it("should throw error when initializing container with undecorated classes", () => {
-    class UndecoratedClass {
-    }
+    class UndecoratedClass {}
 
     const container = new Container();
     expect(() => container.bootstrap(UndecoratedClass)).toThrowError("Classes [UndecoratedClass] are not decorated with @Injectable.");
@@ -34,7 +33,7 @@ describe("Container", () => {
     5;
 
     const container = new Container();
-    expect(() => container.resolve(id('nonExistent'))).toThrowError();
+    expect(() => container.resolve(id("nonExistent"))).toThrowError();
   });
 
   // Handle circular dependencies during initialization

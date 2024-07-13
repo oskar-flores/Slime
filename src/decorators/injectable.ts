@@ -10,7 +10,7 @@ import { type InterfaceId, type InterfaceOfIds } from "./interfaceId";
 export function Injectable<I, TDependencies extends InterfaceId<unknown>[]>(id: InterfaceId<I>, dependencies?: [...TDependencies]) {
   return function <
     T extends {
-      new(...args: InterfaceOfIds<TDependencies>): I;
+      new (...args: InterfaceOfIds<TDependencies>): I;
     },
   >(constructor: T, { kind }: ClassDecoratorContext) {
     if (kind === "class") {
